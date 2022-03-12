@@ -9,6 +9,7 @@ Django = "==4.0.2"
 
 [dev-packages]
 black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.10"
