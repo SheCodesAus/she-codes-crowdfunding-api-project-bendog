@@ -8,6 +8,7 @@ djangorestframework = "==3.13.1"
 Django = "==4.0.2"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.10"
