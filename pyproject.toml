@@ -3,8 +3,25 @@ profile = "black"
 
 [tool.black]
 line-length = 99
-target_version = ['py37']
-exclude = '''
+target_version = ['py310']
+#exclude = '''
+#(
+#  /(
+#      \.eggs         # exclude a few common directories in the
+#    | \.git          # root of the project
+#    | \.hg
+#    | \.mypy_cache
+#    | \.tox
+#    | \.venv
+#    | _build
+#    | buck-out
+#    | build
+#    | dist
+#  )/
+#    | migrations
+#)
+#'''
+force-exclude = '''
 (
   /(
       \.eggs         # exclude a few common directories in the
