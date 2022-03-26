@@ -37,7 +37,6 @@ class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field="username",
         read_only="true",
-        # queryset=User.objects.all()
     )
 
     class Meta:
@@ -46,8 +45,22 @@ class CommentSerializer(serializers.ModelSerializer):
         exclude = ["visible"]
 
 
+class ProjectCommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field="username",
+        read_only="true",
+        # queryset=User.objects.all()
+    )
+
+    class Meta:
+        model = Comment
+        # fields = []
+        exclude = ["visible", "project"]
+
+
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get("title", instance.title)

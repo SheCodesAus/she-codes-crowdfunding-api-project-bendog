@@ -8,6 +8,7 @@ from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly
 from .serializers import (
     CommentSerializer,
     PledgeSerializer,
+    ProjectCommentSerializer,
     ProjectDetailSerializer,
     ProjectSerializer,
 )
@@ -91,3 +92,15 @@ class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     queryset = Comment.objects.filter(visible=True)
     serializer_class = CommentSerializer
+
+
+class ProjectCommentListApi(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # queryset = Comment.objects.filter(visible=True)
+    serializer_class = ProjectCommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, project_id=self.kwargs.get("pk"))
+
+    def get_queryset(self):
+        return Comment.objects.filter(project_id=self.kwargs.get("pk"))
