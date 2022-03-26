@@ -1,11 +1,17 @@
 from django.http import Http404
-from rest_framework import permissions, status
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Pledge, Project
-from .permissions import IsOwnerOrReadOnly
-from .serializers import PledgeSerializer, ProjectDetailSerializer, ProjectSerializer
+from .models import Comment, Pledge, Project
+from .permissions import IsAuthorOrReadOnly, IsOwnerOrReadOnly
+from .serializers import (
+    CommentSerializer,
+    PledgeSerializer,
+    ProjectCommentSerializer,
+    ProjectDetailSerializer,
+    ProjectSerializer,
+)
 
 # Create your views here.
 
@@ -71,3 +77,30 @@ class ProjectDetail(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentListApi(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comment.objects.filter(visible=True)
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class CommentDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    queryset = Comment.objects.filter(visible=True)
+    serializer_class = CommentSerializer
+
+
+class ProjectCommentListApi(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # queryset = Comment.objects.filter(visible=True)
+    serializer_class = ProjectCommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, project_id=self.kwargs.get("pk"))
+
+    def get_queryset(self):
+        return Comment.objects.filter(project_id=self.kwargs.get("pk"))

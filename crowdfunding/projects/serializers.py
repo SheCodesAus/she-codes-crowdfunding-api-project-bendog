@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Pledge, Project
+from .models import Comment, Pledge, Project
+
+User = get_user_model()
 
 
 class PledgeSerializer(serializers.Serializer):
@@ -30,8 +33,34 @@ class ProjectSerializer(serializers.Serializer):
         return Project.objects.create(**validated_data)
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field="username",
+        read_only="true",
+    )
+
+    class Meta:
+        model = Comment
+        # fields = []
+        exclude = ["visible"]
+
+
+class ProjectCommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field="username",
+        read_only="true",
+        # queryset=User.objects.all()
+    )
+
+    class Meta:
+        model = Comment
+        # fields = []
+        exclude = ["visible", "project"]
+
+
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get("title", instance.title)
