@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 djangorestframework = "==3.13.1"
 Django = "==4.0.2"
+pyyaml = "*"
+uritemplate = "*"
 
 [dev-packages]
 black = "*"

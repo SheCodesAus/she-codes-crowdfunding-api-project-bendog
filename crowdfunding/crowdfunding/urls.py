@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
     path("", include("projects.urls")),
@@ -23,4 +24,13 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
     path("admin/", admin.site.urls),
+    path(
+        "openapi",
+        get_schema_view(
+            title="Crowd Funding 101",
+            description="Crowd funding API demo for She Codes Australia",
+            version="1.0.0",
+        ),
+        name="openapi-schema",
+    ),
 ]

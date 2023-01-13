@@ -17,4 +17,4 @@ urlpatterns = [
     path("comment/<int:pk>/", views.CommentDetailApi.as_view(), name="comment-detail"),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns, allowed=["json", "html"])
