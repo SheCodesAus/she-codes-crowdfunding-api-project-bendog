@@ -1,6 +1,8 @@
 from django.http import Http404
 from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from .models import Comment, Pledge, Project
@@ -14,6 +16,18 @@ from .serializers import (
 )
 
 # Create your views here.
+
+
+@api_view(["GET"])
+def api_root(request, format=None):
+    """a base index for navigating easily"""
+    return Response(
+        {
+            "projects": reverse("project-list", request=request, format=format),
+            "pledges": reverse("pledge-list", request=request, format=format),
+            "comments": reverse("comment-list", request=request, format=format),
+        }
+    )
 
 
 class PledgeList(APIView):
